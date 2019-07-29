@@ -35,7 +35,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': resolve('src'),
-      'common': resolve('src/common')//resolve转化为绝对路径，用到node.js中path.join()方法
+      'common': resolve('src/common'),//resolve转化为绝对路径，用到node.js中path.join()方法
+      'components': resolve('src/components')
     }
   },
   module: {
