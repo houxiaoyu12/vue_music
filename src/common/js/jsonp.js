@@ -1,3 +1,5 @@
+//jsonp方法封装
+
 import originJSONP from 'jsonp'
 
 export default function (url, data, option) {
