@@ -13,7 +13,15 @@
       <div class="recommend-list">
         <h1 class="list-title">热门歌单推荐</h1>
         <ul>
-
+          <li class="item" v-for="(item, i) in discList" :keys="i">
+            <div class="icon">
+              <img :src="item.imgurl">
+            </div>
+            <div class="text">
+              <h2 class="name" v-html="item.creator.name"></h2>
+              <p class="desc" v-html="item.dissname"></p>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
@@ -21,24 +29,35 @@
 </template>
 
 <script>
+  import {getRecommend,getDiscList} from "../../api/recomend";
   import Slider from '../../base/slider/slider'
-  import {getRecommend} from "../../api/recomend";
   import {ERR_OK} from "../../api/config";
 
   export default {
     data() {
       return {
-        recommends: []
+        recommends: [],
+        discList: []
       }
     },
     created() {
-      this._getRecommend()
+      //获取轮播图的数据
+      this._getRecommend();
+      //获取歌单列表
+      this._getDiscList();
     },
     methods: {
       _getRecommend() {
         getRecommend().then((res) => {
           if(res.code === ERR_OK){
             this.recommends = res.data.slider
+          }
+        })
+      },
+      _getDiscList() {
+        getDiscList().then((res) => {
+          if(res.code === ERR_OK){
+            this.discList = res.data.list
           }
         })
       }
@@ -79,7 +98,11 @@
           .icon
             flex: 0 0 60px
             width: 60px
+            //height: 60px
             padding-right: 20px
+            img
+              height: 60px
+              width: 60px
           .text
             display: flex
             flex-direction: column
