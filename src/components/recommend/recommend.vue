@@ -6,7 +6,7 @@
           <slider>
             <div v-for="(item, index) in recommends" :keys="index">
               <a :href="item.linkUrl">
-                <img @load="loadImage" :src="item.picUrl">
+                <img class="needsclick" @load="loadImage" :src="item.picUrl">
               </a>
             </div>
           </slider>
@@ -16,7 +16,7 @@
           <ul>
             <li class="item" v-for="(item, i) in discList" :keys="i">
               <div class="icon">
-                <img :src="item.imgurl">
+                <img v-lazy="item.imgurl">
               </div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
@@ -45,10 +45,7 @@
     },
     created() {
       //获取轮播图的数据
-      setTimeout(() => {
-        this._getRecommend();
-      },2000);
-
+      this._getRecommend();
       //获取歌单列表
       this._getDiscList();
     },
