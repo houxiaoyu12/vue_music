@@ -89,6 +89,18 @@
       },
       //跳转到对应字母表的位置方法,第二的参数为0是即时滚动的
       _scrollTo(index) {
+        //让点击字母表两端无效
+        if(!index && index !== 0){
+          return
+        }
+        //处理index边界问题
+        if(index < 0){
+          index = 0
+        } else if(index > this.listHeight.length - 2) {
+          index = this.listHeight.length - 2
+        }
+
+        this.scrollY = -this.listHeight[index];//实现点击字母表歌手列表滑动到对应的位置。
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
       },
       //将每个列表的高度计算出来
