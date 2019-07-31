@@ -1,3 +1,4 @@
+<!--loading组件-->
 <template>
   <div class="loading">
     <img src="./loading.gif">

@@ -1,11 +1,14 @@
 <template>
-  <div class="singer">singer</div>
+  <div class="singer">
+    <list-view :data="singers"></list-view>
+  </div>
 </template>
 
 <script>
   import {getSingerList} from "../../api/singer";
   import {ERR_OK} from "../../api/config";
   import Singer from '../../common/js/singer'
+  import ListView from '../../base/listview/listview'
 
   const HOT_NAME = '热门';
   const HOT_SINGER_LEN = 10;
@@ -23,9 +26,9 @@
       _getSingerList() {
         getSingerList().then((res) => {
           if(res.code === ERR_OK){
-            this.singers = res.data.list;
+            this.singers = this._normalizeSinger(res.data.list);
             //console.log(this.singers);//处理前数据
-            console.log(this._normalizeSinger(this.singers))
+            //console.log(this._normalizeSinger(this.singers))
           }
         })
       },
@@ -75,6 +78,9 @@
         //最后得到的是一维数组
         return hot.concat(ret);
       }
+    },
+    components: {
+      ListView,
     }
   }
 </script>

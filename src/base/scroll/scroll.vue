@@ -1,3 +1,4 @@
+<!--上下滑动组件-->
 <template>
   <div ref="wrapper">
     <slot></slot>
@@ -22,9 +23,9 @@
         default: null
       }
     },
-    data() {
+    /*data() {
       return {}
-    },
+    },*/
     mounted() {
       setTimeout(() => {
         this._initScroll()
