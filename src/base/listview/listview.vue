@@ -1,6 +1,12 @@
 <!--歌手歌单列表组件-->
 <template>
-  <scroll class="listview" :data="data" ref="listview">
+  <scroll class="listview"
+          :data="data"
+          ref="listview"
+          :listenScroll="listenScroll"
+          :probeType="probeType"
+          @scroll="scroll"
+  >
     <ul>
       <li v-for="(group, index) in data" :key="index" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
@@ -15,7 +21,12 @@
     <div class="list-shortcut" @touchstart="onShortcutTouchStart"
          @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
-        <li v-for="(item, index) in shortcutList" :key="index" class="item" :data-index="index">{{item}}</li>
+        <li v-for="(item, index) in shortcutList"
+            :key="index"
+            class="item"
+            :data-index="index"
+            :class="{current: currentIndex===index}"
+        >{{item}}</li>
       </ul>
     </div>
   </scroll>
@@ -31,11 +42,20 @@
     created() {
       //初始化touch用于，两个函数之间的传值
       this.touch = {};
+      this.listenScroll = true;
+      this.listHeight = []; //存放着每个字母所包含的列表的高度
+      this.probeType = 3; //滚动实时派发事件
     },
     props: {
       data: {
         type: Array,
         default: []
+      }
+    },
+    data() {
+      return {
+        scrollY: -1, //滚动位置的坐标
+        currentIndex: 0 //字母高亮的index
       }
     },
     computed: {
@@ -63,9 +83,54 @@
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta;
         this._scrollTo(anchorIndex);
       },
+      //歌手滚动位置
+      scroll(pos) {
+        this.scrollY = pos.y;
+      },
       //跳转到对应字母表的位置方法,第二的参数为0是即时滚动的
       _scrollTo(index) {
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+      },
+      //将每个列表的高度计算出来
+      _calculateHeight() {
+        this.listHeight = [];
+        const list = this.$refs.listGroup;
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i];
+          height += item.clientHeight;
+          this.listHeight.push(height);
+        }
+      }
+    },
+    watch: {
+      data() {
+        setTimeout(() => {
+          this._calculateHeight()
+        },20)
+      },
+      scrollY(newY) {
+        const listHeight = this.listHeight;
+
+        //当滚动到顶部，newY>0
+        if(newY > 0){
+          this.currentIndex = 0;
+          return
+        }
+        //在中间部分滚动
+        for (let i = 0; i < listHeight.length - 1; i++) {
+          let height1 = listHeight[i];
+          let height2 = listHeight[i + 1];
+          //判断最后一个或者在中间的时候
+          if(-newY >= height1 && -newY < height2){
+            this.currentIndex = i;
+            //console.log('hxy',this.currentIndex);
+            return
+          }
+        }
+        //当移动到底部，且-newY大于最后一个元素的上限
+        this.currentIndex = listHeight.length - 2;
       }
     },
     components: {

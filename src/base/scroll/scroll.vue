@@ -21,11 +21,13 @@
       data: {
         type: Array,
         default: null
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
-    /*data() {
-      return {}
-    },*/
+
     mounted() {
       setTimeout(() => {
         this._initScroll()
@@ -39,7 +41,14 @@
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click
-        })
+        });
+        //监听歌单列表的滚动
+        if(this.listenScroll){
+          let _this = this;
+          this.scroll.on('scroll', (pos) => {
+            _this.$emit('scroll', pos)
+          })
+        }
       },
       enable() {
         this.scroll && this.scroll.enable();
