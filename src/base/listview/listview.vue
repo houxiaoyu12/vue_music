@@ -29,6 +29,9 @@
         >{{item}}</li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTilte" ref="fixed">
+      <h1 class="fixed-title">{{fixedTilte}}</h1>
+    </div>
   </scroll>
 </template>
 
@@ -37,6 +40,7 @@
   import {getData} from '../../common/js/dom'
 
   const ANCHOR_HEIGHT = 18;//每个元素的高度
+  const TITLE_HEIGHT = 30;
 
   export default {
     created() {
@@ -55,7 +59,8 @@
     data() {
       return {
         scrollY: -1, //滚动位置的坐标
-        currentIndex: 0 //字母高亮的index
+        currentIndex: 0, //字母高亮的index
+        diff: -1 //比较参数
       }
     },
     computed: {
@@ -63,6 +68,12 @@
         return this.data.map(group => {
           return group.title.substring(0, 1)
         })
+      },
+      fixedTilte() {
+        if(this.scrollY > 0){
+          return ''
+        }
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
       }
     },
     methods: {
@@ -138,11 +149,21 @@
           if(-newY >= height1 && -newY < height2){
             this.currentIndex = i;
             //console.log('hxy',this.currentIndex);
+            this.diff = height2 + newY;
             return
           }
         }
         //当移动到底部，且-newY大于最后一个元素的上限
         this.currentIndex = listHeight.length - 2;
+      },
+      diff(newVal) {
+        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0;
+        if(this.fixedTop === fixedTop){
+          return
+        }
+        this.fixedTop = fixedTop;
+        console.log(this.fixedTop);
+        this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     },
     components: {
