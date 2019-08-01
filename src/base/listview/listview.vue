@@ -32,10 +32,14 @@
     <div class="list-fixed" v-show="fixedTilte" ref="fixed">
       <h1 class="fixed-title">{{fixedTilte}}</h1>
     </div>
+    <div class="loading-container" v-show="!data.length">
+      <loading :title="title" />
+    </div>
   </scroll>
 </template>
 
 <script>
+  import Loading from '../../base/loading/loading'
   import Scroll from '../scroll/scroll'
   import {getData} from '../../common/js/dom'
 
@@ -60,7 +64,8 @@
       return {
         scrollY: -1, //滚动位置的坐标
         currentIndex: 0, //字母高亮的index
-        diff: -1 //比较参数
+        diff: -1, //比较参数
+        title: 'Loading...'
       }
     },
     computed: {
@@ -162,18 +167,20 @@
           return
         }
         this.fixedTop = fixedTop;
-        console.log(this.fixedTop);
+        //console.log(this.fixedTop);
         this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     },
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .listview
     position: relative
@@ -202,6 +209,7 @@
           margin-left: 20px
           color: $color-text-l
           font-size: $font-size-medium
+          no-wrap()
     .list-shortcut
       position: absolute
       z-index: 30
