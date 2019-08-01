@@ -7,15 +7,16 @@
   import {mapGetters} from 'vuex'
   import {getSingerDetail} from "../../api/singer";
   import {ERR_OK} from "../../api/config";
+  import {createSong} from "../../common/js/song";//调用封装的方法
 
   export default {
     data() {
-      return {}
+      return {
+        songs: []
+      }
     },
     computed: {
-      ...mapGetters([
-        'singer'
-      ])
+      ...mapGetters(['singer'])
     },
     created() {
       this._getDetail()
@@ -28,9 +29,21 @@
         }
         getSingerDetail(this.singer.id).then((res) => {
           if(res.code === ERR_OK){
-            console.log(res.data.list)
+            //console.log(res.data.list);
+            this.songs = this._normalizeSongs(res.data.list)
+            console.log(this.songs)
           }
         })
+      },
+      _normalizeSongs(list) {
+        let ret = [];
+        list.forEach((item) => {
+          let {musicData} = item;
+          if(musicData.songid && musicData.albumid){
+            ret.push(createSong(musicData))
+          }
+        });
+        return ret
       }
     }
   }
