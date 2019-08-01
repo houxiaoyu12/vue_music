@@ -7,17 +7,19 @@
           :probeType="probeType"
           @scroll="scroll"
   >
+    <!--歌单列表-->
     <ul>
       <li v-for="(group, index) in data" :key="index" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="(item, index) in group.items" class="list-group-item">
+          <li @click="selectItem(item)" v-for="(item, index) in group.items" class="list-group-item">
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
         </ul>
       </li>
     </ul>
+    <!--右侧字母表-->
     <div class="list-shortcut" @touchstart="onShortcutTouchStart"
          @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
@@ -29,9 +31,11 @@
         >{{item}}</li>
       </ul>
     </div>
+    <!--固定title-->
     <div class="list-fixed" v-show="fixedTilte" ref="fixed">
       <h1 class="fixed-title">{{fixedTilte}}</h1>
     </div>
+    <!--Loading-->
     <div class="loading-container" v-show="!data.length">
       <loading :title="title" />
     </div>
@@ -82,6 +86,9 @@
       }
     },
     methods: {
+      selectItem(item) {
+        this.$emit('select', item);
+      },
       onShortcutTouchStart(e) {
         let anchorIndex = getData(e.target, 'index');
         //第一次获取触碰字母表的位置
