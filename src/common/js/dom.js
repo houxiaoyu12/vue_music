@@ -26,7 +26,7 @@ export function getData(el, name, val) {
   }
 }
 
-//浏览器能检测特性=================================================
+//浏览器性能检测特性=================================================
 let elementStyle = document.createElement('div').style;
 let vendor = (() => {
   let transformNames = {
