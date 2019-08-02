@@ -1,21 +1,32 @@
 <!--歌手详情页面-->
 <template>
-  <div class="singer-detail"></div>
+  <transition name="slide">
+    <music-list :song="songs" :title="title" :bg-image="bgImage"></music-list>
+  </transition>
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
   import {getSingerDetail} from "../../api/singer";
   import {ERR_OK} from "../../api/config";
-  import {createSong} from "../../common/js/song";//调用封装的方法
+  import {createSong} from "../../common/js/song";
+  import MusicList from "../music-list/music-list"
+  //调用封装的方法
 
   export default {
+    components: {MusicList},
     data() {
       return {
         songs: []
       }
     },
     computed: {
+      title() {
+        return this.singer.name;
+      },
+      bgImage() {
+        return this.singer.avatar;
+      },
       ...mapGetters(['singer'])
     },
     created() {
@@ -62,18 +73,18 @@
     background: $color-background
     animation: show 0.2s linear;
 
-    @keyframes show {
+    /*@keyframes show {
       0% {
         transform: translate(100%, 0%);
       }
       100% {
         transform: translate(0%, 0%);
       }
-    }
+    }*/
 
-  /*.slide-enter-active, .slide-leave-active
+  .slide-enter-active, .slide-leave-active
     transition: all 0.3s
 
   .slide-enter, .slide-leave-to
-    transform: translate3d(100%, 0, 0)*/
+    transform: translate3d(100%, 0, 0)
 </style>
