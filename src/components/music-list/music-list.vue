@@ -72,8 +72,21 @@
       scrollY(newY) {
         let translateY = Math.max(this.minTranslateY, newY);
         let zIndex = 0;
+        let scale = 1;
+        let blur = 0;
         this.$refs.layer.style.transform = `translate3d(0,${translateY}px,0)`;
         this.$refs.layer.style.webkitTransform = `translate3d(0,${translateY}px,0)`;
+        const percent = Math.abs(newY / this.imageHeight);
+        if(newY > 0){
+          scale = 1 + percent;
+          zIndex = 10;
+        } else {
+          blur = Math.min(20*percent, 20)
+        }
+        //处理图片模糊
+        this.$refs.filter.style.backdropFilter = `blur(${blur}px)`;
+        this.$refs.filter.style.webkitBackdropFilter = `blur(${blur}px)`;
+
         if(newY < this.minTranslateY){
           zIndex = 10;
           this.$refs.bgImage.style.paddingTop = 0;
@@ -86,6 +99,8 @@
           this.$refs.filter.style.boxShadow = `0px 0px 100px rgba(7, 17, 27, 1) inset`;
         }
         this.$refs.bgImage.style.zIndex = zIndex;
+        this.$refs.bgImage.style.transform = `scale(${scale})`;
+        this.$refs.bgImage.style.webkitTransform = `scale(${scale})`;
       }
     },
     created() {
