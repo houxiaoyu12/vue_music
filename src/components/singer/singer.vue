@@ -28,10 +28,12 @@
       ...mapMutations({
         setSinger: 'SET_SINGER'
       }),
+      //子组件返回数据
       selectSinger(singer) {
         this.$router.push({
           path: `/singer/${singer.id}`
         });
+        //将点击的歌手数据存到vuex中
         this.setSinger(singer)
       },
       _getSingerList() {

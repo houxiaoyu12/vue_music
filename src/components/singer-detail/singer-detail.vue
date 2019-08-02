@@ -1,7 +1,7 @@
 <!--歌手详情页面-->
 <template>
   <transition name="slide">
-    <music-list :song="songs" :title="title" :bg-image="bgImage"></music-list>
+    <music-list :songs="songs" :title="title" :bg-image="bgImage"></music-list>
   </transition>
 </template>
 
@@ -42,7 +42,7 @@
           if(res.code === ERR_OK){
             //console.log(res.data.list);
             this.songs = this._normalizeSongs(res.data.list)
-            console.log(this.songs)
+            //console.log(this.songs)
           }
         })
       },
@@ -63,7 +63,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
 
-  .singer-detail
+  /*.singer-detail
     position: fixed
     z-index: 100
     top: 0
@@ -71,7 +71,7 @@
     right: 0
     bottom: 0
     background: $color-background
-    animation: show 0.2s linear;
+    animation: show 0.2s linear;*/
 
     /*@keyframes show {
       0% {

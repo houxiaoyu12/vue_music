@@ -4,13 +4,21 @@
       <i class="icon-back"></i>
     </div>
     <h1 class="title">{{title}}</h1>
-    <div class="bg-image" :style="bgStyle">
+    <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="filter"></div>
     </div>
+    <scroll :data="songs" class="list" ref="list">
+      <div class="song-list-wrapper">
+        <song-list :songs="songs"></song-list>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script>
+  import Scroll from '../../base/scroll/scroll'
+  import SongList from '../../base/song-list/song-list'
+
   export default {
     props: {
       bgImage: {
@@ -19,7 +27,7 @@
       },
       songs: {
         type: Array,
-        default: function () {
+        default: () => {
           return []
         }
       },
@@ -39,6 +47,14 @@
       bgStyle() {
         return `background-image:url(${this.bgImage})`
       }
+    },
+    mounted() {
+      //动态设置top
+      this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
+    },
+    components: {
+      Scroll,
+      SongList
     }
   }
 </script>
@@ -49,7 +65,7 @@
 
   .music-list
     position: fixed
-    z-index: 100
+    z-index: 9999
     top: 0
     left: 0
     bottom: 0
@@ -125,6 +141,8 @@
       bottom: 0
       width: 100%
       background: $color-background
+      z-index: 2
+      overflow: hidden
       .song-list-wrapper
         padding: 20px 30px
       .loading-container
