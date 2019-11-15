@@ -25,7 +25,7 @@
             @scroll="scroll"
     >
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list @select="selectItem" :songs="songs"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>
@@ -77,6 +77,9 @@
       },
       back() {
         this.$router.back()
+      },
+      selectItem(item, index) {
+        //this.
       }
     },
     computed: {
