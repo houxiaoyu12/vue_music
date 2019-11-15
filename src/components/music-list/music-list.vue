@@ -38,7 +38,8 @@
   import Scroll from '../../base/scroll/scroll'
   import SongList from '../../base/song-list/song-list'
   import Loading from '../../base/loading/loading'
-  import {prefixStyle} from "../../common/js/dom";
+  import {prefixStyle} from '../../common/js/dom'
+  import {mapActions} from 'vuex'
 
   const RESERVED_HEIGHT = 40;
   const transform = prefixStyle('transform');
@@ -79,8 +80,14 @@
         this.$router.back()
       },
       selectItem(item, index) {
-        //this.
-      }
+        this.selectPlay({
+          list: this.songs,
+          index
+        })
+      },
+      ...mapActions([
+        'selectPlay'
+      ])
     },
     computed: {
       bgStyle() {
