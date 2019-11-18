@@ -10,12 +10,12 @@ const mutations = {
     state.playing = flag
   },
   //是否全屏播放
-  [types.SET_FULL_SCREEN_](state, flag) {
-    state.fullscreen = flag
+  [types.SET_FULL_SCREEN](state, flag) {
+    state.fullScreen = flag
   },
   //播放列表
   [types.SET_PLAY_LIST](state, list) {
-    state.playlist = list
+    state.playList = list
   },
   //播放模式列表
   [types.SET_SEQUENCE_LIST](state, list) {

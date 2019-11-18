@@ -4,10 +4,10 @@ const state = {
   singer: {}, //歌手
   playing: false, //是否播放
   fullScreen: false, //是否全屏播放
-  playlist: [], //播放列表
+  playList: [], //播放列表
   sequenceList: [], //播放模式列表
   mode: playMode.sequence, //播放的顺序
-  currenIndex: -1, //当前播放的index
+  currentIndex: -1, //当前播放的index
 };
 
 export default state
