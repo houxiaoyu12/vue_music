@@ -24,7 +24,7 @@
           >
               <div class="middle-l" ref="middleL">
                   <div class="cd-wrapper" ref="cdWrapper">
-                      <div class="cd" :class="">
+                      <div class="cd" :class="rotateClass">
                           <img class="image" :src="currentSong.imag">
                       </div>
                   </div>
@@ -63,7 +63,7 @@
                       <i  class="icon-prev"></i>
                   </div>
                   <div class="icon i-center" :class="">
-                      <i  class="icon-play"></i>
+                      <i @click="togglePlaying"  :class="playIcon"></i>
                   </div>
                   <div class="icon i-right" :class="">
                       <i  class="icon-next"></i>
@@ -79,7 +79,7 @@
       <transition name="mini">
         <div class="mini-player" v-show="!fullScreen" @click="open">
           <div class="icon">
-              <img width="40" height="40" :src="currentSong.imag">
+              <img :class="rotateClass" width="40" height="40" :src="currentSong.imag">
           </div>
           <div class="text">
               <h2 class="name" v-html="currentSong.name"></h2>
@@ -89,12 +89,14 @@
               <!--<progress-circle :radius="radius" :percent="percent">
                   <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
               </progress-circle>-->
+              <i @click.stop="togglePlaying" :class="miniIcon"></i>
           </div>
           <div class="control" >
               <i class="icon-playlist"></i>
           </div>
         </div>
       </transition>
+      <audio ref="audio" src="http://up_mp4.t57.cn/2018/1/03m/13/396131203208.m4a"></audio>
   </div>
 </template>
 
@@ -115,7 +117,17 @@
 
     },
     computed: {
-      ...mapGetters(['fullScreen', 'playList','currentSong'])
+      ...mapGetters(['fullScreen', 'playList','currentSong','playing']),
+
+      playIcon() {
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniIcon() {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      rotateClass() {
+        return this.playing ? 'play' : 'play pause'
+      }
     },
     methods: {
       back() {
@@ -124,6 +136,10 @@
       open() {
         this.setFullScreen(true)
       },
+      togglePlaying() {
+        this.setPlayingState(!this.playing)
+      },
+      /*=================飞入飞出动画==================*/
       enter(el, done) {
         const {x, y, scale} = this._getPosAndScale();
         let animation = {
@@ -176,9 +192,24 @@
           scale
         }
       },
+      /*==========================================================*/
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN'
-      })
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayingState: 'SET_PLAYING_STATE'
+      }),
+    },
+    watch: {
+      currentSong() {
+        this.$nextTick(() => {
+          this.$refs.audio.play()
+        })
+      },
+      playing(newPlaying) {
+        const audio = this.$refs.audio;
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause()
+        })
+      }
     }
   }
 </script>
