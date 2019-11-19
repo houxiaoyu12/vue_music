@@ -11,7 +11,7 @@ export const sequenceList = state => state.sequenceList;
 //播放的顺序
 export const mode = state => state.mode;
 //当前播放的index
-export const currenIndex = state => state.currenIndex;
+export const currentIndex = state => state.currentIndex;
 //当前播放的歌曲
 export const currentSong = (state) => {
   return state.playList[state.currentIndex] || {}

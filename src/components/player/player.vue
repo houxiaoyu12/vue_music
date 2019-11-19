@@ -59,14 +59,14 @@
                   <div class="icon i-left">
                       <i class="icon-sequence"></i>
                   </div>
-                  <div class="icon i-left" :class="">
-                      <i  class="icon-prev"></i>
+                  <div class="icon i-left" :class="disableCls">
+                      <i @click="prev" class="icon-prev"></i>
                   </div>
-                  <div class="icon i-center" :class="">
+                  <div class="icon i-center" :class="disableCls">
                       <i @click="togglePlaying"  :class="playIcon"></i>
                   </div>
-                  <div class="icon i-right" :class="">
-                      <i  class="icon-next"></i>
+                  <div class="icon i-right" :class="disableCls">
+                      <i @click="next" class="icon-next"></i>
                   </div>
                   <div class="icon i-right">
                       <i  class="icon icon-not-favorite"></i>
@@ -96,7 +96,10 @@
           </div>
         </div>
       </transition>
-      <audio ref="audio" src="http://up_mp4.t57.cn/2018/1/03m/13/396131203208.m4a"></audio>
+      <audio
+          ref="audio"
+          src="http://up_mp4.t57.cn/2018/1/03m/13/396131203208.m4a"
+      ></audio>
   </div>
 </template>
 
@@ -110,14 +113,14 @@
   export default {
     data() {
       return {
-
+        songReady: true, //用于audio标签播放暂停的时候使用的标志位
       }
     },
     props:{
 
     },
     computed: {
-      ...mapGetters(['fullScreen', 'playList','currentSong','playing']),
+      ...mapGetters(['fullScreen', 'playList', 'currentSong', 'playing', 'currentIndex']),
 
       playIcon() {
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -127,6 +130,9 @@
       },
       rotateClass() {
         return this.playing ? 'play' : 'play pause'
+      },
+      disableCls() {
+        return this.songReady ? '' : 'disable'
       }
     },
     methods: {
@@ -138,6 +144,46 @@
       },
       togglePlaying() {
         this.setPlayingState(!this.playing)
+      },
+      //下一曲
+      next() {
+        //todo
+        /*//监测下一首歌是否准备好 audio标签中用的目前只有一首歌是写死的所以暂时不用，
+        if (!this.songReady) {
+          return
+        }*/
+        let index = this.currentIndex + 1;
+        //当播放到最后一首歌的时候，要处理index的问题
+        if (index === this.playList.length) {
+          index = 0
+        }
+        this.setCurrentIndex(index);
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+        /*this.songReady = false;*/
+      },
+      //上一曲
+      prev() {
+        /*if (!this.songReady) {
+          return
+        }*/
+        let index = this.currentIndex - 1;
+        //当时第一首歌的时候，再往前就是最后一首歌
+        if (index === -1) {
+          index = this.playList.length - 1
+        }
+        this.setCurrentIndex(index);
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+        /*this.songReady = false;*/
+      },
+      ready() {
+        this.songReady = true;
+      },
+      error() {
+        this.songReady = true;
       },
       /*=================飞入飞出动画==================*/
       enter(el, done) {
@@ -195,7 +241,8 @@
       /*==========================================================*/
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE'
+        setPlayingState: 'SET_PLAYING_STATE',
+        setCurrentIndex: 'SET_CURRENT_INDEX'
       }),
     },
     watch: {
