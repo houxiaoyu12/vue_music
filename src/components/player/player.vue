@@ -49,11 +49,11 @@
                   <span class="dot" :class=""></span>
               </div>
               <div class="progress-wrapper">
-                  <span class="time time-l">11</span>
+                  <span class="time time-l">{{formatTime(currentTime)}}</span>
                   <div class="progress-bar-wrapper">
                       <!--<progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>-->
                   </div>
-                  <span class="time time-r">{{11}}</span>
+                  <span class="time time-r">{{formatTime(durationTime)}}</span>
               </div>
               <div class="operators">
                   <div class="icon i-left">
@@ -99,6 +99,7 @@
       <audio
           ref="audio"
           src="http://up_mp4.t57.cn/2018/1/03m/13/396131203208.m4a"
+          @timeupdate="updateTime"
       ></audio>
   </div>
 </template>
@@ -114,6 +115,8 @@
     data() {
       return {
         songReady: true, //用于audio标签播放暂停的时候使用的标志位
+        currentTime: 0, //当前歌曲的时间
+        durationTime: 0, //当前歌曲的总时间
       }
     },
     props:{
@@ -179,11 +182,16 @@
         }
         /*this.songReady = false;*/
       },
+      /*=========audio 对应的API方法==============*/
       ready() {
         this.songReady = true;
       },
       error() {
         this.songReady = true;
+      },
+      updateTime(e) {
+        this.currentTime = e.target.currentTime;
+        this.durationTime = e.target.duration
       },
       /*=================飞入飞出动画==================*/
       enter(el, done) {
@@ -239,11 +247,26 @@
         }
       },
       /*==========================================================*/
+      formatTime(interval)  {
+        interval = interval | 0; //向下取整类似Math.follow
+        const minute = interval / 60 | 0;
+        const second = this._pad(interval % 60);
+        return `${minute}:${second}`
+      },
+      //补零
+      _pad(num, n = 2) {
+        let len = num.toString().length;
+        while(len < n) {
+          num = '0' + num;
+          len++
+        }
+        return num;
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayingState: 'SET_PLAYING_STATE',
         setCurrentIndex: 'SET_CURRENT_INDEX'
-      }),
+      })
     },
     watch: {
       currentSong() {
