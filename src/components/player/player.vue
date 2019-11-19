@@ -51,7 +51,9 @@
 					<div class="progress-wrapper">
 						<span class="time time-l">{{formatTime(currentTime)}}</span>
 						<div class="progress-bar-wrapper">
-							<progress-bar :percent="percent"></progress-bar>
+							<progress-bar :percent="percent"
+														@percentChange="onProgressBarChange"
+							></progress-bar>
 						</div>
 						<span class="time time-r">{{formatTime(durationTime)}}</span>
 					</div>
@@ -110,10 +112,10 @@
 	import {prefixStyle} from 'common/js/dom'
 	import ProgressBar from '../../base/progress-bar/progress-bar'
 
-	const transform = prefixStyle ('transform');
+	const transform = prefixStyle('transform');
 
 	export default {
-		data () {
+		data() {
 			return {
 				songReady: true, //用于audio标签播放暂停的时候使用的标志位
 				currentTime: 0, //当前歌曲的时间
@@ -122,20 +124,20 @@
 		},
 		props: {},
 		computed: {
-			...mapGetters (['fullScreen', 'playList', 'currentSong', 'playing', 'currentIndex']),
+			...mapGetters(['fullScreen', 'playList', 'currentSong', 'playing', 'currentIndex']),
 
-			playIcon () {
+			playIcon() {
 				return this.playing ? 'icon-pause' : 'icon-play'
 			},
-			miniIcon () {
+			miniIcon() {
 				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
 			},
 			//控制CD旋转的Cls
-			rotateClass () {
+			rotateClass() {
 				return this.playing ? 'play' : 'play pause'
 			},
 			//按钮置灰的Cls现在暂时不用，src写死的
-			disableCls () {
+			disableCls() {
 				return this.songReady ? '' : 'disable'
 			},
 			//传入进度条的percent
@@ -147,17 +149,17 @@
 			ProgressBar
 		},
 		methods: {
-			back () {
-				this.setFullScreen (false)
+			back() {
+				this.setFullScreen(false)
 			},
-			open () {
-				this.setFullScreen (true)
+			open() {
+				this.setFullScreen(true)
 			},
-			togglePlaying () {
-				this.setPlayingState (!this.playing)
+			togglePlaying() {
+				this.setPlayingState(!this.playing)
 			},
 			//下一曲
-			next () {
+			next() {
 				//todo
 				/*//监测下一首歌是否准备好 audio标签中用的目前只有一首歌是写死的所以暂时不用，
 				if (!this.songReady) {
@@ -168,14 +170,14 @@
 				if (index === this.playList.length) {
 					index = 0
 				}
-				this.setCurrentIndex (index);
+				this.setCurrentIndex(index);
 				if (!this.playing) {
-					this.togglePlaying ()
+					this.togglePlaying()
 				}
 				/*this.songReady = false;*/
 			},
 			//上一曲
-			prev () {
+			prev() {
 				/*if (!this.songReady) {
 					return
 				}*/
@@ -184,26 +186,32 @@
 				if (index === -1) {
 					index = this.playList.length - 1
 				}
-				this.setCurrentIndex (index);
+				this.setCurrentIndex(index);
 				if (!this.playing) {
-					this.togglePlaying ()
+					this.togglePlaying()
 				}
 				/*this.songReady = false;*/
 			},
+			onProgressBarChange(percent) {
+				this.$refs.audio.currentTime = this.durationTime * percent;
+				if (!this.playing) {
+					this.togglePlaying()
+				}
+			},
 			/*=========audio 对应的API方法==============*/
-			ready () {
+			ready() {
 				this.songReady = true;
 			},
-			error () {
+			error() {
 				this.songReady = true;
 			},
-			updateTime (e) {
+			updateTime(e) {
 				this.currentTime = e.target.currentTime;
 				this.durationTime = e.target.duration
 			},
 			/*=================飞入飞出动画==================*/
-			enter (el, done) {
-				const {x, y, scale} = this._getPosAndScale ();
+			enter(el, done) {
+				const {x, y, scale} = this._getPosAndScale();
 				let animation = {
 					0: {
 						transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
@@ -215,7 +223,7 @@
 						transform: `translate3d(0,0,0) scale(1)`
 					}
 				};
-				animations.registerAnimation ({
+				animations.registerAnimation({
 					name: 'move',
 					animation,
 					presets: {
@@ -223,23 +231,23 @@
 						easing: 'linear' //缓动曲线
 					}
 				});
-				animations.runAnimation (this.$refs.cdWrapper, 'move', done)
+				animations.runAnimation(this.$refs.cdWrapper, 'move', done)
 			},
-			afterEnter () {
-				animations.unregisterAnimation ('move');
+			afterEnter() {
+				animations.unregisterAnimation('move');
 				this.$refs.cdWrapper.style.animation = ''
 			},
-			leave (el, done) {
+			leave(el, done) {
 				this.$refs.cdWrapper.style.transition = 'all 0.8s'
-				const {x, y, scale} = this._getPosAndScale ()
+				const {x, y, scale} = this._getPosAndScale()
 				this.$refs.cdWrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
-				this.$refs.cdWrapper.addEventListener ('transitionend', done)
+				this.$refs.cdWrapper.addEventListener('transitionend', done)
 			},
-			afterLeave () {
+			afterLeave() {
 				this.$refs.cdWrapper.style.transition = ''
 				this.$refs.cdWrapper.style[transform] = ''
 			},
-			_getPosAndScale () {
+			_getPosAndScale() {
 				const targetWidth = 40;
 				const paddingLeft = 40;
 				const paddingBottom = 30;
@@ -255,37 +263,37 @@
 				}
 			},
 			/*==========================================================*/
-			formatTime (interval) {
+			formatTime(interval) {
 				interval = interval | 0; //向下取整类似Math.follow
 				const minute = interval / 60 | 0;
-				const second = this._pad (interval % 60);
+				const second = this._pad(interval % 60);
 				return `${minute}:${second}`
 			},
 			//补零
-			_pad (num, n = 2) {
-				let len = num.toString ().length;
+			_pad(num, n = 2) {
+				let len = num.toString().length;
 				while (len < n) {
 					num = '0' + num;
 					len++
 				}
 				return num;
 			},
-			...mapMutations ({
+			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
 				setCurrentIndex: 'SET_CURRENT_INDEX'
 			})
 		},
 		watch: {
-			currentSong () {
-				this.$nextTick (() => {
-					this.$refs.audio.play ()
+			currentSong() {
+				this.$nextTick(() => {
+					this.$refs.audio.play()
 				})
 			},
-			playing (newPlaying) {
+			playing(newPlaying) {
 				const audio = this.$refs.audio;
-				this.$nextTick (() => {
-					newPlaying ? audio.play () : audio.pause ()
+				this.$nextTick(() => {
+					newPlaying ? audio.play() : audio.pause()
 				})
 			}
 		}
