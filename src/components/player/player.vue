@@ -88,10 +88,9 @@
 					<p class="desc" v-html="currentSong.singer"></p>
 				</div>
 				<div class="control">
-					<!--<progress-circle :radius="radius" :percent="percent">
+					<progress-circle :radius="radius" :percent="percent">
 							<i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
-					</progress-circle>-->
-					<i @click.stop="togglePlaying" :class="miniIcon"></i>
+					</progress-circle>
 				</div>
 				<div class="control">
 					<i class="icon-playlist"></i>
@@ -111,6 +110,7 @@
 	import animations from 'create-keyframe-animation' //js动画github API组件
 	import {prefixStyle} from 'common/js/dom'
 	import ProgressBar from '../../base/progress-bar/progress-bar'
+	import ProgressCircle from '../../base/progress-circle/progress-circle'
 
 	const transform = prefixStyle('transform');
 
@@ -120,6 +120,7 @@
 				songReady: true, //用于audio标签播放暂停的时候使用的标志位
 				currentTime: 0, //当前歌曲的时间
 				durationTime: 0, //当前歌曲的总时间
+				radius: 32, //circle大小
 			}
 		},
 		props: {},
@@ -146,7 +147,7 @@
 			}
 		},
 		components: {
-			ProgressBar
+			ProgressBar, ProgressCircle
 		},
 		methods: {
 			back() {
