@@ -58,8 +58,8 @@
 						<span class="time time-r">{{formatTime(durationTime)}}</span>
 					</div>
 					<div class="operators">
-						<div class="icon i-left">
-							<i class="icon-sequence"></i>
+						<div class="icon i-left" @click="changeMode">
+							<i :class="iconMode"></i>
 						</div>
 						<div class="icon i-left" :class="disableCls">
 							<i @click="prev" class="icon-prev"></i>
@@ -89,7 +89,7 @@
 				</div>
 				<div class="control">
 					<progress-circle :radius="radius" :percent="percent">
-							<i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+						<i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
 					</progress-circle>
 				</div>
 				<div class="control">
@@ -108,9 +108,10 @@
 <script>
 	import {mapGetters, mapMutations,} from 'vuex'
 	import animations from 'create-keyframe-animation' //js动画github API组件
-	import {prefixStyle} from 'common/js/dom'
+	import {prefixStyle} from '../../common/js/dom'
 	import ProgressBar from '../../base/progress-bar/progress-bar'
 	import ProgressCircle from '../../base/progress-circle/progress-circle'
+	import {playMode} from '../../common/js/config'
 
 	const transform = prefixStyle('transform');
 
@@ -125,7 +126,7 @@
 		},
 		props: {},
 		computed: {
-			...mapGetters(['fullScreen', 'playList', 'currentSong', 'playing', 'currentIndex']),
+			...mapGetters(['fullScreen', 'playList', 'currentSong', 'playing', 'currentIndex', 'mode']),
 
 			playIcon() {
 				return this.playing ? 'icon-pause' : 'icon-play'
@@ -144,6 +145,9 @@
 			//传入进度条的percent
 			percent() {
 				return this.currentTime / this.durationTime
+			},
+			iconMode() {
+				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
 			}
 		},
 		components: {
@@ -193,11 +197,17 @@
 				}
 				/*this.songReady = false;*/
 			},
+			//改变进度条
 			onProgressBarChange(percent) {
 				this.$refs.audio.currentTime = this.durationTime * percent;
 				if (!this.playing) {
 					this.togglePlaying()
 				}
+			},
+			//改变歌曲顺序
+			changeMode() {
+				const mode = (this.mode + 1) % 3;
+				this.setPlayMode(mode)
 			},
 			/*=========audio 对应的API方法==============*/
 			ready() {
@@ -282,7 +292,8 @@
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
-				setCurrentIndex: 'SET_CURRENT_INDEX'
+				setCurrentIndex: 'SET_CURRENT_INDEX',
+				setPlayMode: 'SET_PLAY_MODE'
 			})
 		},
 		watch: {
