@@ -101,6 +101,7 @@
 			ref="audio"
 			src="http://up_mp4.t57.cn/2018/1/03m/13/396131203208.m4a"
 			@timeupdate="updateTime"
+			@ended="end"
 		></audio>
 	</div>
 </template>
@@ -205,6 +206,17 @@
 					this.togglePlaying()
 				}
 				/*this.songReady = false;*/
+			},
+			end(){
+				if (this.mode === playMode.loop) {
+				  this.loop()
+				} else {
+				  this.next()
+				}
+			},
+			loop() {
+				this.$refs.audio.currentTime = 0;
+				this.$refs.audio.play();
 			},
 			//改变进度条
 			onProgressBarChange(percent) {
@@ -328,6 +340,7 @@
 				}
 				this.$nextTick(() => {
 					this.$refs.audio.play()
+					this.currentSong.getLyric()
 				})
 			},
 			playing(newPlaying) {
