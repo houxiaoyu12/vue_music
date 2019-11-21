@@ -32,16 +32,15 @@
 							<div class="playing-lyric">playingLyric</div>
 						</div>
 					</div>
-					<!--<scroll class="middle-r" ref="lyricList" >-->
-					<!--<div class="lyric-wrapper">-->
-					<!--<div v-if="true">-->
-					<!--<p ref="lyricLine"-->
-					<!--class="text"-->
-					<!--:class="{}"-->
-					<!--&gt;line.txt</p>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--</scroll>-->
+					<scroll class="middle-r" ref="lyricList">
+						<div class="lyric-wrapper">
+							<div>
+								<p ref="lyricLine"
+									 class="text"
+									 v-for="(line,index) in lines">{{line}}</p>
+							</div>
+						</div>
+					</scroll>
 				</div>
 				<div class="bottom">
 					<div class="dot-wrapper">
@@ -114,12 +113,21 @@
 	import ProgressCircle from '../../base/progress-circle/progress-circle'
 	import {playMode} from '../../common/js/config'
 	import {shuffle} from "../../common/js/util";
+	import Scroll from '../../base/scroll/scroll'
 
 	const transform = prefixStyle('transform');
 
 	export default {
 		data() {
 			return {
+				lines: [
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+				],
 				songReady: true, //用于audio标签播放暂停的时候使用的标志位
 				currentTime: 0, //当前歌曲的时间
 				durationTime: 0, //当前歌曲的总时间
@@ -161,7 +169,7 @@
 			}
 		},
 		components: {
-			ProgressBar, ProgressCircle
+			ProgressBar, ProgressCircle, Scroll
 		},
 		methods: {
 			back() {
@@ -207,11 +215,11 @@
 				}
 				/*this.songReady = false;*/
 			},
-			end(){
+			end() {
 				if (this.mode === playMode.loop) {
-				  this.loop()
+					this.loop()
 				} else {
-				  this.next()
+					this.next()
 				}
 			},
 			loop() {
@@ -336,7 +344,7 @@
 		watch: {
 			currentSong(newSong, oldSong) {
 				if (newSong.id === oldSong.id) {
-				  return
+					return
 				}
 				this.$nextTick(() => {
 					this.$refs.audio.play()
