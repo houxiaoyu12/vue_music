@@ -20,7 +20,9 @@
 					<h2 class="subtitle" v-html="currentSong.singer"></h2>
 				</div>
 				<div class="middle"
-
+						 @touchstart.prevent="middleTouchStart"
+						 @touchmove.prevent="middleTouchMove"
+						 @touchend="middleTouchEnd"
 				>
 					<div class="middle-l" ref="middleL">
 						<div class="cd-wrapper" ref="cdWrapper">
@@ -32,7 +34,7 @@
 							<div class="playing-lyric">playingLyric</div>
 						</div>
 					</div>
-					<scroll class="middle-r" ref="lyricList">
+					<scroll class="middle-r" ref="lyricList" :data="lines && lines">
 						<div class="lyric-wrapper">
 							<div>
 								<p ref="lyricLine"
@@ -44,8 +46,8 @@
 				</div>
 				<div class="bottom">
 					<div class="dot-wrapper">
-						<span class="dot" :class=""></span>
-						<span class="dot" :class=""></span>
+						<span class="dot" :class="{'active':currentShow === 'cd'}"></span>
+						<span class="dot" :class="{'active':currentShow === 'lyric'}"></span>
 					</div>
 					<div class="progress-wrapper">
 						<span class="time time-l">{{formatTime(currentTime)}}</span>
@@ -127,11 +129,15 @@
 					'一闪一闪亮晶晶','漫天都是小星星',
 					'一闪一闪亮晶晶','漫天都是小星星',
 					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
+					'一闪一闪亮晶晶','漫天都是小星星',
 				],
 				songReady: true, //用于audio标签播放暂停的时候使用的标志位
 				currentTime: 0, //当前歌曲的时间
 				durationTime: 0, //当前歌曲的总时间
 				radius: 32, //circle大小
+				currentShow: 'cd', //CD歌词界面切换
 			}
 		},
 		props: {},
@@ -167,6 +173,9 @@
 			iconMode() {
 				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
 			}
+		},
+		created() {
+			this.touch = {}
 		},
 		components: {
 			ProgressBar, ProgressCircle, Scroll
@@ -264,6 +273,15 @@
 				this.currentTime = e.target.currentTime;
 				this.durationTime = e.target.duration
 			},
+			middleTouchStart(e) {
+
+			},
+			middleTouchMove(e) {
+
+			},
+			middleTouchEnd(e) {
+
+			},
 			/*=================飞入飞出动画==================*/
 			enter(el, done) {
 				const {x, y, scale} = this._getPosAndScale();
@@ -348,7 +366,7 @@
 				}
 				this.$nextTick(() => {
 					this.$refs.audio.play()
-					this.currentSong.getLyric()
+					//this.currentSong.getLyric()
 				})
 			},
 			playing(newPlaying) {
