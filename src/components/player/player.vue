@@ -9,9 +9,9 @@
                 @after-leave="afterLeave"
     >
       <div class="normal-player" v-show="fullScreen">
-        <!--<div class="background">
-            <img width="100%" height="100%" :src="currentSong.imag">
-        </div>-->
+        <div class="background">
+          <img width="100%" height="100%" :src="currentSong.imag">
+        </div>
         <div class="top">
           <div class="back" @click="back">
             <i class="icon-back"></i>
@@ -124,6 +124,8 @@
     data () {
       return {
         lines: [
+          '一闪一闪亮晶晶', '漫天都是小星星',
+          '一闪一闪亮晶晶', '漫天都是小星星',
           '一闪一闪亮晶晶', '漫天都是小星星',
           '一闪一闪亮晶晶', '漫天都是小星星',
           '一闪一闪亮晶晶', '漫天都是小星星',
@@ -408,10 +410,10 @@
         if (newSong.id === oldSong.id) {
           return
         }
-        this.$nextTick(() => {
+        setTimeout(() => {
           this.$refs.audio.play()
           //this.currentSong.getLyric()
-        })
+        }, 1000)
       },
       playing (newPlaying) {
         const audio = this.$refs.audio
