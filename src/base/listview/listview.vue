@@ -107,6 +107,9 @@
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta;
         this._scrollTo(anchorIndex);
       },
+      refresh() {
+        this.$refs.listview.refresh()
+      },
       //歌手滚动位置
       scroll(pos) {
         this.scrollY = pos.y;
