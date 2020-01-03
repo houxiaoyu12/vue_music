@@ -9,6 +9,7 @@ const state = {
   mode: playMode.sequence, //播放的顺序
   currentIndex: -1, //当前播放的index
   disc: {}, //歌单跳转页面数据
+  topList: {}, //推荐歌单列表
 };
 
 export default state

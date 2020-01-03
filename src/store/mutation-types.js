@@ -16,3 +16,5 @@ export const SET_PLAY_MODE = 'SET_PLAY_MODE';
 export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX';
 //歌单推荐跳转描述数据
 export const SET_DISC = 'SET_DISC'
+//歌单推荐列表
+export const SET_TOPLIST = 'SET_TOPLIST'

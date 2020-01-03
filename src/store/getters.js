@@ -18,3 +18,5 @@ export const currentSong = (state) => {
 };
 //推荐歌单数据
 export const disc = state => state.disc
+//推荐歌单列表
+export const topList = state => state.topList

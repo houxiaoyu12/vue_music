@@ -32,7 +32,11 @@ const mutations = {
   //推荐歌单详情页数据
   [types.SET_DISC](state, disc) {
     state.disc = disc
-  }
+  },
+  //推荐歌单列表
+  [types.SET_TOPLIST](state, topList) {
+    state.topList = topList
+  },
 };
 
 export default mutations
