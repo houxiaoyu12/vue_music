@@ -28,6 +28,10 @@ const mutations = {
   //当前播放的index
   [types.SET_CURRENT_INDEX](state, index) {
     state.currentIndex = index
+  },
+  //推荐歌单详情页数据
+  [types.SET_DISC](state, disc) {
+    state.disc = disc
   }
 };
 
