@@ -43,7 +43,6 @@
       },
       onQueryChange(query) {
         this.query = query
-        console.log('abc',query)
       },
       _getHotKey () {
         getHotKey().then((res) => {
