@@ -13,3 +13,18 @@ export function shuffle(arr) {
 	}
 	return _arr
 }
+
+//函数防抖
+export function debounce(fn, t) {
+  let timer
+  let delay = t || 500;
+  return function (...args) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      timer = null;
+      fn.apply(this, args);
+    }, delay);
+  }
+}

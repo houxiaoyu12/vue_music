@@ -2,7 +2,9 @@
   <scroll class="suggest"
           :data="result"
           :pullup="pullup"
+          :beforeScroll="beforeScroll"
           @scrollToEnd="seacrchMore"
+          @beforeScroll="listScroll"
           ref="suggest"
   >
     <ul class="suggest-list">
@@ -16,18 +18,21 @@
       </li>
       <loading v-show="hasMore"></loading>
     </ul>
+    <div class="no-result">
+      <no-result v-show="!hasMore && !result.length" title="抱歉,暂无搜索结果" class="no-result-wrapper"></no-result>
+    </div>
   </scroll>
 </template>
 
 <script type="text/ecmascript-6">
   import Scroll from '../../base/scroll/scroll'
   import Loading from '../../base/loading/loading'
-  // import NoResult from 'base/no-result/no-result'
   import { search } from '../../api/search.js'
   import { ERR_OK } from '../../api/config'
   //import {filterSinger} from '../../common/js/song'
   import {mapMutations, mapActions} from 'vuex'
   import Singer from '../../common/js/singer'
+  import NoResult from '../../base/no-result/no-result'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -49,6 +54,7 @@
         result: [],
         pullup: true, //scroll组件的下拉参数
         hasMore: true, //是否有更多
+        beforeScroll: true, //处理滑动键盘收起的问题
       }
     },
     methods: {
@@ -91,6 +97,9 @@
         })
         this.setSinger(singer)
       },
+      listScroll() {
+
+      },
       _genResult (data) {
         let ret = []
         if (data.album && data.album.itemlist.length > 0) {
@@ -109,7 +118,7 @@
       },
       _checkMore (data) {
         const song = data.song
-        if (song.itemlist.length > 0) {
+        if (song.itemlist.length >= 0) {
           this.hasMore = false
         }
       },
@@ -124,7 +133,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   }
 </script>
