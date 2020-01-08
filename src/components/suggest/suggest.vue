@@ -6,7 +6,7 @@
           ref="suggest"
   >
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="(item, index) of result" :key="index">
+      <li @click="selectItem(item)" class="suggest-item" v-for="(item, index) of result" :key="index">
         <div class="icon">
           <i :class="getIconCls(item)"></i>
         </div>
@@ -26,8 +26,8 @@
   import { search } from '../../api/search.js'
   import { ERR_OK } from '../../api/config'
   //import {filterSinger} from '../../common/js/song'
-  // import {mapMutations, mapActions} from 'vuex'
-  // import Singer from '../../common/js/singer'
+  import {mapMutations, mapActions} from 'vuex'
+  import Singer from '../../common/js/singer'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -81,6 +81,16 @@
           return `${item.name}--${item.singer}`
         }
       },
+      selectItem(item) {
+        const singer = new Singer({
+          id: item.id,
+          name: item.singer
+        })
+        this.$router.push({
+          path: `/search/${singer.id}`
+        })
+        this.setSinger(singer)
+      },
       _genResult (data) {
         let ret = []
         if (data.album && data.album.itemlist.length > 0) {
@@ -103,6 +113,9 @@
           this.hasMore = false
         }
       },
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      })
     },
     watch: {
       query (newQuery) {

@@ -18,6 +18,7 @@
     <div class="search-result" v-show="query">
       <suggest :query="query"></suggest>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -26,6 +27,7 @@
   import { getHotKey } from '../../api/search'
   import { ERR_OK } from '../../api/config'
   import Suggest from '../../components/suggest/suggest'
+  import {mapMutations, mapActions} from 'vuex'
 
   export default {
     data () {
@@ -50,7 +52,10 @@
             this.hotKey = res.data.hotkey.slice(0, 10)
           }
         })
-      }
+      },
+      ...mapActions([
+        'insertSong'
+      ])
     },
     components: {
       SearchBox,
